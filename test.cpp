@@ -3,7 +3,8 @@
 #include <cstdlib>
 #include <exception>
 #include <string>
-
+#include <curl/curl.h>
+#include "gumbo.h"
 #include <tgbot/tgbot.h>
 
 using namespace std;
@@ -12,33 +13,27 @@ using namespace TgBot;
 int main() {
     Bot bot("1123398491:AAGWVjoytWLjqlWhcg4iBUhJmbIcdN22h6A");
 
-    InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> row0, row1;
-    InlineKeyboardButton::Ptr checkButton(new InlineKeyboardButton);
-    InlineKeyboardButton::Ptr helloButton(new InlineKeyboardButton);
+    CURL* curl;
+    curl = curl_easy_init();
 
-    checkButton->text = "check";
-    checkButton->callbackData = "check";
-    helloButton->text = "hello";
-    helloButton->callbackData = "hello";
-    row0.push_back(checkButton);
-    row1.push_back(helloButton);
+    InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> row0;
+    InlineKeyboardButton::Ptr choicekBut(new InlineKeyboardButton);
+
+    choicekBut->text = "Выбрать город";
+    choicekBut->callbackData = "choice";
+    row0.push_back(choicekBut);
 
     keyboard->inlineKeyboard.push_back(row0);
-    keyboard->inlineKeyboard.push_back(row1);
 
     bot.getEvents().onCommand("start", [&bot, &keyboard](Message::Ptr message) {
-        bot.getApi().sendMessage(message->chat->id, "Hi!", false, 0, keyboard);
+        bot.getApi().sendMessage(message->chat->id, "Привет!", false, 0, keyboard);
     });
-    bot.getEvents().onCommand("check", [&bot, &keyboard](Message::Ptr message) {
-        string response = "ok";
-        bot.getApi().sendMessage(message->chat->id, response, false, 0, keyboard, "Markdown");
-    });
-    bot.getEvents().onCallbackQuery([&bot, &keyboard](CallbackQuery::Ptr query) {
-        if (StringTools::startsWith(query->data, "check")) {
-            string response = "ok";
-            bot.getApi().sendMessage(query->message->chat->id, response, false, 0, keyboard, "Markdown");
-        }
+    bot.getEvents().onCommand("choice", [&bot, &keyboard](Message::Ptr messageKey) {
+    	bot.getApi().sendMessage(messageKey->chat->id, "Введите название населнного пункта");
+    	bot.getEvents().onCallbackQuery([&bot]((CallbackQuery::Ptr query){
+
+    	});
     });
 
     const string photoFilePath = "1.jpg";

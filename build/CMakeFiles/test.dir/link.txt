@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -Wall -lcurl  -rdynamic CMakeFiles/test.dir/test.cpp.o  -o test /usr/local/lib/libTgBot.a /usr/local/lib/libgumbo.a -lpthread -lssl -lcrypto -lboost_system -lcurl 
